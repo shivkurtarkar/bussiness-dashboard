@@ -1,4 +1,4 @@
-CONTAINER_NAME:=shivamkurtarkar/prefect:dedtc
+PREFECT_CONTAINER_NAME:=shivamkurtarkar/prefect:dedtc
 
 PREFECT_ORION_HOST:=0.0.0.0	
 PREFECT_ORION_PORT:=4200
@@ -24,28 +24,35 @@ run-kaggle-download-step:
 		--network=${NETWORK} \
 		-v `pwd`/../data2:/data \
 		-v /home/shiv/.kaggle:/root/.kaggle \
+		-v /run/media/shiv/27c10285-91ca-41fa-9213-f60af3807181/code/keys/google/dtc-de-376914-d552dc193e05.json:/.google/credentials/google_credentials.json \
 		-v `pwd`:/app \
 		--entrypoint='bash' \
-		kaggle_download_step 
+		kaggle_download_step  -c "prefect config set PREFECT_API_URL=http://prefect:4200/api && bash"
 
-
-#run: make docker-build 		build docker
-docker-build:
-	docker build -t ${CONTAINER_NAME} .
-
-#run: make docker-push 		push docker
-docker-push:
-	docker push ${CONTAINER_NAME}
-
+#run: make docker-network 		docker-network
 docker-network:
+	cd prefect && \
 	docker network create ${NETWORK}
 
-docker-run:
+
+#run: make prefect-docker-build 		build docker
+prefect-docker-build:
+	cd prefect && \
+	docker build -t ${PREFECT_CONTAINER_NAME} .
+
+#run: make prefect-docker-push 		push docker
+prefect-docker-push:
+	cd prefect && \
+	docker push ${PREFECT_CONTAINER_NAME}
+
+#run: make prefect-docker-run 		docker-run
+prefect-docker-run:
 	docker run -it --rm	\
 		--name=ingetion-job \
 		--network=${NETWORK} \
 		-p 4200:4200 \
-		${CONTAINER_NAME} $(ARGS)
+		${PREFECT_CONTAINER_NAME} $(ARGS)
+
 
 #run: make prefect-run
 prefect-run:

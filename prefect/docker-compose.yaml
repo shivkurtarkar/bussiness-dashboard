@@ -1,0 +1,18 @@
+version: '3'
+networks:
+  default:
+    name: ${NETWORK}
+    driver: bridge
+services:
+  prefect:
+    image: ${PREFECT_CONTAINER_NAME}
+    container_name: prefect
+    ports:
+      - "4200:4200"
+    command: "prefect orion start --host ${PREFECT_ORION_HOST} --port ${PREFECT_ORION_PORT}"
+  # jupyterlab:
+  #   image: ${JUPYTER_CONTAINER_NAME}
+  #   container_name: jupyterlab
+  #   ports:
+  #     - 8888:8888
+  #     - '4040:4040'
