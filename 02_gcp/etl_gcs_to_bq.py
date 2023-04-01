@@ -11,19 +11,20 @@ def extract_from_gcs(file):
     local_path = f"/data/"
     gcs_block = GcsBucket.load("prefect-dtc-de-bucket")
     gcs_block.get_directory(from_path=gcs_path, local_path=local_path)
-    return Path(f'data/{gcs_path}')
+    return Path(f'/data/{file}')
 
 @task()
 def extract_from_file(path:Path):
-    df = pd.csv(path)
+    df = pd.read_csv(path)
     return df
 
 @task()
-def write_bq(data:pd.DataFrame)->None:
-    gcp_credentials_block = GcpCredentials.load("gcp-creds")
+def write_bq(df:pd.DataFrame)->None:
+    gcp_credentials_block = GcpCredentials.load("gcp-cred")
+    project_id="dtc-de-376914"
     processed_df = df.to_gbq(
-        destination_table="dtc-de-376914.dtcde.rides",
-        project_id="dtc-de-376914",
+        destination_table=f"{project_id}.bd.sales",
+        project_id=project_id,
         credentials=gcp_credentials_block.get_credentials_from_service_account(),
         chunksize=500000,
         if_exists="append"
@@ -32,7 +33,8 @@ def write_bq(data:pd.DataFrame)->None:
 
 @flow(log_prints=True)
 def etl_gcs_to_bq():
-    path = extract_from_gcs()
+    data_filename="kz.csv"
+    path = extract_from_gcs(data_filename)
     print(f"path {path}")
     data = extract_from_file(path)
     write_bq(data)

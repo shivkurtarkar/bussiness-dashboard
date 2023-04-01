@@ -9,6 +9,6 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-COPY download_kaggle_dataset.py download_kaggle_dataset.py
+COPY etl_gcs_to_bq.py etl_gcs_to_bq.py
 
-ENTRYPOINT [ "python", "download_kaggle_dataset.py"]
+ENTRYPOINT [ "python", "etl_gcs_to_bq.py"]
