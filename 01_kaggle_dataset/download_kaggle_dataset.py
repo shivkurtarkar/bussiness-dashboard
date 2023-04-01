@@ -20,7 +20,7 @@ def write_gcs(path: str) -> None:
 def etl_kaggle_to_gcs(dataset_name:str, output_dir:str):
     dataset_filepath = download_kaggle_dataset(dataset_name, output_dir)    
     print(f'files: {dataset_filepath}')
-    # write_gcs(dataset_filepath)
+    write_gcs(dataset_filepath)
 
 
 if __name__ == '__main__':
