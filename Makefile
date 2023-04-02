@@ -1,5 +1,5 @@
+DBT_CONTAINER_NAME:=dbt-local:dev
 PREFECT_CONTAINER_NAME:=shivamkurtarkar/prefect:dedtc
-
 PREFECT_ORION_HOST:=0.0.0.0	
 PREFECT_ORION_PORT:=4200
 
@@ -34,7 +34,7 @@ build-bq-import-step:
 	cd 02_gcp && \
 	docker build -t gcp_bq_import .
 
-#run: run-import-bq-step		run bq import step
+#run: make run-import-bq-step		run bq import step
 run-import-bq-step:
 	cd 02_gcp && \
 	docker run -it \
@@ -42,8 +42,9 @@ run-import-bq-step:
 		-v `pwd`/../data2:/data \
 		-v /run/media/shiv/27c10285-91ca-41fa-9213-f60af3807181/code/keys/google/dtc-de-376914-d552dc193e05.json:/.google/credentials/google_credentials.json \
 		-v `pwd`:/app \
-		--entrypoint='bash' \
-		gcp_bq_import  -c "prefect config set PREFECT_API_URL=http://prefect:4200/api && bash"
+		--entrypoint='bash'  \
+		gcp_bq_import \
+			-c "prefect config set PREFECT_API_URL=http://prefect:4200/api && bash"
 
 #run: make docker-network 		docker-network
 docker-network:
@@ -69,8 +70,29 @@ prefect-docker-run:
 		-p 4200:4200 \
 		${PREFECT_CONTAINER_NAME} $(ARGS)
 
+#run: make prefect-docker-compose-run 		docker-run
+prefect-docker-compose-run:
+	cd prefect && \
+	docker-compose up
+
 
 #run: make prefect-run
 prefect-run:
 	@# prefect config set PREFECT_API_URL=http://127.0.0.1:4200/api
 	echo prefect orion start --host ${PREFECT_ORION_HOST} --port ${PREFECT_ORION_PORT}
+
+
+#run: dbt-docker-build		build dbt docker
+dbt-docker-build:
+	cd 04_dbt_project/docker-setup && \
+	docker build -t ${DBT_CONTAINER_NAME} -f dev.dockerfile . 
+#run: make dbt-dev-env	 docker dbt dev env
+dbt-dev-env:
+	cd 04_dbt_project && \
+	docker run -it --rm \
+		-v `pwd`:/app \
+		-v `pwd`/docker-setup/.dbt:/root/.dbt \
+		-v /run/media/shiv/27c10285-91ca-41fa-9213-f60af3807181/code/keys/google/dtc-de-376914-d552dc193e05.json:/.google/credentials/google_credentials.json \
+		-w  /app \
+		--network=${NETWORK} \
+		${DBT_CONTAINER_NAME} bash
