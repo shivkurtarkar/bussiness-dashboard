@@ -3,10 +3,14 @@ networks:
   default:
     name: ${NETWORK}
     driver: bridge
+volumes:
+  prefect:
 services:
   prefect:
     image: ${PREFECT_CONTAINER_NAME}
     container_name: prefect
+    volumes:
+      - prefect:/root/.prefect
     ports:
       - "4200:4200"
     command: "prefect orion start --host ${PREFECT_ORION_HOST} --port ${PREFECT_ORION_PORT}"
