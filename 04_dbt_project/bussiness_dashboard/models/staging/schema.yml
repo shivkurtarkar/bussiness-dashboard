@@ -1,0 +1,20 @@
+
+version: 2
+
+sources:
+  - name: staging
+    database: dtc-de-376914
+    schema: bd
+
+    tables:
+      - name: sales
+
+models:
+  - name: sales_data
+    description: "A starter dbt model"
+    # columns:
+      # - name: id
+      #   description: "The primary key for this table"
+      #   tests:
+      #     - unique
+      #     - not_null
