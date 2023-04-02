@@ -1,5 +1,5 @@
 # Problem statement
-Help bussiness with demand forcasting to simplify daily bussiness operation.
+Help bussiness with demand forcasting to simplify daily bussiness operation. To give insights into how bussiness is performing by visualizing metrics on the dashboard.
 
 
 
