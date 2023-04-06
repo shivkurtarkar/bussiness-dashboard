@@ -33,7 +33,7 @@ run-kaggle-download-step:
 		-v `pwd`:/app \
 		-e PREFECT_API_URL=http://prefect:4200/api \
 		kaggle_download_step 
-		
+
 		# \
 		#  -c "prefect config set PREFECT_API_URL=http://prefect:4200/api && bash"
 		--entrypoint='bash' \
@@ -106,4 +106,17 @@ dbt-dev-env:
 		-v ${GCS_CREDENTIAL_JSON}:/.google/credentials/google_credentials.json \
 		-w  /app \
 		--network=${NETWORK} \
-		${DBT_CONTAINER_NAME} bash
+		${DBT_CONTAINER_NAME} 
+		# bash
+
+#run: make dbt-docker-run	 docker dbt run
+dbt-docker-run:
+	cd 04_dbt_project && \
+	docker run -it --rm \
+		-v `pwd`/bussiness_dashboard:/app/ \
+		-v `pwd`/docker-setup/.dbt:/root/.dbt \
+		-v ${GCS_CREDENTIAL_JSON}:/.google/credentials/google_credentials.json \
+		-w  /app \
+		--network=${NETWORK} \
+		${DBT_CONTAINER_NAME} 
+		
