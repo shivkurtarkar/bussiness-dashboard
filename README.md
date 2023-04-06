@@ -96,12 +96,12 @@ ___
 - update gcp project id in [./04_dbt_project/docker-setup/.dbt/profiles.yml](./04_dbt_project/docker-setup/.dbt/profiles.yml)
 
 5. Build the dockers
-    ```
-    make prefect-docker-build
-    make build-kaggle-download-step
-    make build-bq-import-step
-    make dbt-docker-build
-    ```
+
+    `make docker-build-all`
+
+    if running in cloud you might need to update docker repository name and run
+    `docker-push-all`
+
 
 6. Run prefect
 
@@ -120,21 +120,29 @@ ___
     ```
 
 9. Setup Agent (local or VM)
-    
     Local
 
-    `prefect agent start --pool default-agent-pool`
+    `make prefect-run-agent`
     
     Virtual Machine
 
     ```
     pip install -r prefect/requirements.txt
     prefect cloud login
-    prefect agent start --pool default-agent-pool
+    prefect agent start -q 'default'
     ```
 10. Deploy the prefect pipelines
+    update the following in [utils/create_blocks.py](./utils/create_blocks.py)
+    repository_name : docker repository name
+    gcs_key_json_path: path to gcs json file in the system
+    dbt_profiles_dir: path to .dbt profiles dir example /home/.dbt
+    kaggle_key_dir: .kaggle keys directory ex: /home/.kaggle
 
+
+    and run 
     ```
-    prefect deployment ...
+    make prefect-run-agent
+    make prefect-create-blocks
+    make prefect-deploy-all
     ```
 
