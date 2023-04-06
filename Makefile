@@ -1,7 +1,12 @@
-DBT_CONTAINER_NAME:=dbt-local:dev
+KAGGLE_CREDENTIAL_DIR:=/home/shiv/.kaggle
+GCS_CREDENTIAL_JSON:=/run/media/shiv/27c10285-91ca-41fa-9213-f60af3807181/code/keys/google/dtc-de-376914-d552dc193e05.json
+
 PREFECT_CONTAINER_NAME:=shivamkurtarkar/prefect:dedtc
+DBT_CONTAINER_NAME:=dbt-local:dev
+
 PREFECT_ORION_HOST:=0.0.0.0	
 PREFECT_ORION_PORT:=4200
+
 
 NETWORK:=pg-network
 
@@ -23,8 +28,8 @@ run-kaggle-download-step:
 	docker run -it \
 		--network=${NETWORK} \
 		-v `pwd`/../data2:/data \
-		-v /home/shiv/.kaggle:/root/.kaggle \
-		-v /run/media/shiv/27c10285-91ca-41fa-9213-f60af3807181/code/keys/google/dtc-de-376914-d552dc193e05.json:/.google/credentials/google_credentials.json \
+		-v ${KAGGLE_CREDENTIAL_DIR}:/root/.kaggle \
+		-v ${GCS_CREDENTIAL_JSON}:/.google/credentials/google_credentials.json \
 		-v `pwd`:/app \
 		--entrypoint='bash' \
 		kaggle_download_step  -c "prefect config set PREFECT_API_URL=http://prefect:4200/api && bash"
@@ -40,7 +45,7 @@ run-import-bq-step:
 	docker run -it \
 		--network=${NETWORK} \
 		-v `pwd`/../data2:/data \
-		-v /run/media/shiv/27c10285-91ca-41fa-9213-f60af3807181/code/keys/google/dtc-de-376914-d552dc193e05.json:/.google/credentials/google_credentials.json \
+		-v ${GCS_CREDENTIAL_JSON}:/.google/credentials/google_credentials.json \
 		-v `pwd`:/app \
 		--entrypoint='bash'  \
 		gcp_bq_import \
@@ -90,9 +95,9 @@ dbt-docker-build:
 dbt-dev-env:
 	cd 04_dbt_project && \
 	docker run -it --rm \
-		-v `pwd`:/app \
+		-v `pwd`/bussiness_dashboard:/app/ \
 		-v `pwd`/docker-setup/.dbt:/root/.dbt \
-		-v /run/media/shiv/27c10285-91ca-41fa-9213-f60af3807181/code/keys/google/dtc-de-376914-d552dc193e05.json:/.google/credentials/google_credentials.json \
+		-v ${GCS_CREDENTIAL_JSON}:/.google/credentials/google_credentials.json \
 		-w  /app \
 		--network=${NETWORK} \
 		${DBT_CONTAINER_NAME} bash
