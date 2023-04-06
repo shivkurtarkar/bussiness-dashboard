@@ -22,10 +22,19 @@ We are using [eCommerce purchase history from electronics store](https://www.kag
 4. Dashboard - Looker Studio, formerly Google Data Studio is using as a dashboard to visualize the results.
 
 ## 1. Data ingestion
+Data source contains single csv file of purchase history. 
+
+Frequency of data download:
+    since this is an static data from kaggle it can be imported only once. But in real usecase new data would be downloaded daily.
 
 ## 2. Data warehouse
+We are using BiqQuery as a Data Warehouse and it is used as data source in looker (Dashboard).
 
-## 3. Transformations
+## 3. Transformations using dbt
+DBT transformation code can be found in [04_dbt_project](./04_dbt_project/). 
+The staging model has structure similar to data source. The `sales` table is partitioned on column `event_time` as this columns is frequently used to filter out relevent time period.
+
+The core model sales_changes computes sales for diffrent time windows.
 
 
 ## 4. Dashboard 
@@ -75,7 +84,15 @@ ___
 
     `terraform destroy`
 
-4. Build the dockers
+4. Update variable in make file
+
+update kaggle api credentials dir `KAGGLE_CREDENTIAL_DIR`
+and gcs credentials json file path `GCS_CREDENTIAL_JSON`
+add dockerhub base name for 
+    `PREFECT_CONTAINER_NAME`
+    `DBT_CONTAINER_NAME`
+
+5. Build the dockers
     ```
     make prefect-docker-build
     make build-kaggle-download-step
@@ -83,15 +100,15 @@ ___
     make dbt-docker-build
     ```
 
-5. Run prefect
+6. Run prefect
 
     `make prefect-docker-compose-run`
 
-6. Prefect GCS Block Setup
+7. Prefect GCS Block Setup
     GCP Credentials (gcp-cred)
     GCS Bucket (prefect-dtc-de-bucket)
 
-7. Run the pipeline
+8. Run the pipeline
 
     ```
     make run-kaggle-download-step
@@ -99,7 +116,7 @@ ___
     make dbt-dev-env
     ```
 
-8. Setup Agent (local or VM)
+9. Setup Agent (local or VM)
     
     Local
 
@@ -112,7 +129,7 @@ ___
     prefect cloud login
     prefect agent start --pool default-agent-pool
     ```
-9. Deploy the prefect pipelines
+10. Deploy the prefect pipelines
 
     ```
     prefect deployment ...
