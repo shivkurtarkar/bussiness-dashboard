@@ -9,6 +9,9 @@ RUN apt-get update && apt-get install -y make wget
 
 WORKDIR /app
 
+COPY bussiness_dashboard bussiness_dashboard
+COPY run_dbt.py run_dbt.py
+
 # COPY pipeline.py pipeline.py
 
-ENTRYPOINT [ "dbt", "run"]
+ENTRYPOINT [ "python", "run_dbt.py"]
