@@ -22,8 +22,9 @@ build-kaggle-download-step:
 	cd 01_kaggle_dataset && \
 	docker build -t kaggle_download_step .
 
-#run: make run-kaggle-download-step		run kaggle download step
-run-kaggle-download-step:
+
+#run: make run-kaggle-download-step-bash		run kaggle download step
+run-kaggle-download-step-bash:
 	cd 01_kaggle_dataset && \
 	docker run -it \
 		--network=${NETWORK} \
@@ -32,19 +33,44 @@ run-kaggle-download-step:
 		-v ${GCS_CREDENTIAL_JSON}:/.google/credentials/google_credentials.json \
 		-v `pwd`:/app \
 		-e PREFECT_API_URL=http://prefect:4200/api \
-		kaggle_download_step 
+		kaggle_download_step  \
+		bash
 
 		# \
-		#  -c "prefect config set PREFECT_API_URL=http://prefect:4200/api && bash"
 		--entrypoint='bash' \
+		#  -c "prefect config set PREFECT_API_URL=http://prefect:4200/api && bash"
+
+#run: make run-kaggle-download-step		run kaggle download step
+run-kaggle-download-step:
+	cd 01_kaggle_dataset && \
+	docker run -it \
+		--network=${NETWORK} \
+		-v `pwd`/../data2:/data \
+		-v ${KAGGLE_CREDENTIAL_DIR}:/root/.kaggle \
+		-v ${GCS_CREDENTIAL_JSON}:/.google/credentials/google_credentials.json \
+		-e PREFECT_API_URL=http://prefect:4200/api \
+		kaggle_download_step 
+
+
+#run: make run-kaggle-download-step-bash		run kaggle download step
+run-kaggle-download-step-bash:
+	cd 01_kaggle_dataset && \
+	docker run -it \
+		--network=${NETWORK} \
+		-v `pwd`/../data2:/data \
+		-v ${KAGGLE_CREDENTIAL_DIR}:/root/.kaggle \
+		-v ${GCS_CREDENTIAL_JSON}:/.google/credentials/google_credentials.json \
+		-e PREFECT_API_URL=http://prefect:4200/api \
+		kaggle_download_step \
+		bash
 
 #run: make build-bq-import-step		build bq import step
 build-bq-import-step:
 	cd 02_gcp && \
 	docker build -t gcp_bq_import .
 
-#run: make run-import-bq-step		run bq import step
-run-import-bq-step:
+#run: make run-import-bq-step-bash		run bq import step
+run-import-bq-step-bash:
 	cd 02_gcp && \
 	docker run -it \
 		--network=${NETWORK} \
@@ -56,6 +82,17 @@ run-import-bq-step:
 
 		# --entrypoint='bash'  \
 		# -c "prefect config set PREFECT_API_URL=http://prefect:4200/api && bash"
+
+#run: make run-import-bq-step		run bq import step
+run-import-bq-step:
+	cd 02_gcp && \
+	docker run -it \
+		--network=${NETWORK} \
+		-v `pwd`/../data2:/data \
+		-v ${GCS_CREDENTIAL_JSON}:/.google/credentials/google_credentials.json \
+		-e PREFECT_API_URL=http://prefect:4200/api \
+		gcp_bq_import 
+
 
 #run: make docker-network 		docker-network
 docker-network:
