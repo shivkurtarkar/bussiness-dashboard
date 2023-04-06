@@ -14,58 +14,19 @@ In this project we are using sales data as an example. Every day at the end of b
 We are using [eCommerce purchase history from electronics store](https://www.kaggle.com/datasets/mkechinov/ecommerce-purchase-history-from-electronics-store) data. This dataset contains purchase data from April 2020 to November 2020 from a large home appliances and electronics online store. 
 
 ## Overview
+![Architecture](./images/architecture.png)
 
 1. Data ingestion - Download dataset and ingest it in data lake(GCP Bucket)
 2. Data warehouse - This data is imported into Big Query for performing anlytics.
 3. Transformations - We are using dbt to transform data to suitable schema and store in BigQuery.
 4. Dashboard - Looker Studio, formerly Google Data Studio is using as a dashboard to visualize the results.
 
-
-
-# Steps to setup infrastructure using Terraform
-```
-refresh service-accounts auth token for this session
-gcloud auth application-defualt login
-
-
-terraform init
-
-terraform plan -var="project=<gcp-project-id>"
-```
-```
-# Create new infra
-terraform apply -var="project=<gcp-project-id>"
-```
-
-```
-# Delete infra after your work, to avoid cost on any running
-terraform destroy
-```
-
-# Project Description
-
 ## 1. Data ingestion
 
-```
-make prefect-docker-build
-make prefect-docker-compose-run
-```
-
-```
-make build-kaggle-download-step
-make run-kaggle-download-step
-```
-```
-make build-bq-import-step
-make run-import-bq-step
-```
 ## 2. Data warehouse
 
 ## 3. Transformations
-```
-make dbt-docker-build
-make dbt-dev-env
-```
+
 
 ## 4. Dashboard 
 Pdf of the dashboard can be found [here](./05_dashboard/DE_Sales_Report.pdf)
@@ -79,7 +40,81 @@ The dashboard tries to answer following quetions
 - Average order price
 - Sales ranking by brand for last 4,12, 24 and 52 weeks.
 
-## References
-### Article inspiration: 
-[PBI Use Case #2: How healthy is your Inventory?](https://medium.com/@dfme69/how-healthy-is-your-inventory-69d40468dfdc)
+
+## Steps to reproduce
+___
+### Prerequisites
+- docker
+- make
+
+1. Clone the repository
+2. Refres service-accounts auth token for this session
+
+    `gcloud auth application-defualt login`
+    
+
+3. Initialize infrastructure using terraform
+    change directory
+
+    `cd terraform`
+
+    initialize terraform
+
+    `terraform init`
+
+    Preview the changes to be applied
+
+    `terraform plan -var="project=<gcp-project-id>"`
+
+    Create new infra
+
+    `terraform apply -var="project=<gcp-project-id>"`
+
+
+    Delete infra after your work, to avoid cost on any running
+
+    `terraform destroy`
+
+4. Build the dockers
+    ```
+    make prefect-docker-build
+    make build-kaggle-download-step
+    make build-bq-import-step
+    make dbt-docker-build
+    ```
+
+5. Run prefect
+
+    `make prefect-docker-compose-run`
+
+6. Prefect GCS Block Setup
+    GCP Credentials (gcp-cred)
+    GCS Bucket (prefect-dtc-de-bucket)
+
+7. Run the pipeline
+
+    ```
+    make run-kaggle-download-step
+    make run-import-bq-step
+    make dbt-dev-env
+    ```
+
+8. Setup Agent (local or VM)
+    
+    Local
+
+    `prefect agent start --pool default-agent-pool`
+    
+    Virtual Machine
+
+    ```
+    pip install -r requirements.txt
+    prefect cloud login
+    prefect agent start --pool default-agent-pool
+    ```
+9. Deploy the prefect pipelines
+
+    ```
+    prefect deployment ...
+    ```
 
