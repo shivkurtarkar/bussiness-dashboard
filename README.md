@@ -114,7 +114,7 @@ ___
     ```
     make run-kaggle-download-step
     make run-import-bq-step
-    make dbt-dev-env
+    make dbt-docker-run
     ```
 
 9. Setup Agent (local or VM)
