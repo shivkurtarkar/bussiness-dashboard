@@ -31,8 +31,12 @@ run-kaggle-download-step:
 		-v ${KAGGLE_CREDENTIAL_DIR}:/root/.kaggle \
 		-v ${GCS_CREDENTIAL_JSON}:/.google/credentials/google_credentials.json \
 		-v `pwd`:/app \
+		-e PREFECT_API_URL=http://prefect:4200/api \
+		kaggle_download_step 
+		
+		# \
+		#  -c "prefect config set PREFECT_API_URL=http://prefect:4200/api && bash"
 		--entrypoint='bash' \
-		kaggle_download_step  -c "prefect config set PREFECT_API_URL=http://prefect:4200/api && bash"
 
 #run: make build-bq-import-step		build bq import step
 build-bq-import-step:
@@ -47,9 +51,11 @@ run-import-bq-step:
 		-v `pwd`/../data2:/data \
 		-v ${GCS_CREDENTIAL_JSON}:/.google/credentials/google_credentials.json \
 		-v `pwd`:/app \
-		--entrypoint='bash'  \
-		gcp_bq_import \
-			-c "prefect config set PREFECT_API_URL=http://prefect:4200/api && bash"
+		-e PREFECT_API_URL=http://prefect:4200/api \
+		gcp_bq_import 
+
+		# --entrypoint='bash'  \
+		# -c "prefect config set PREFECT_API_URL=http://prefect:4200/api && bash"
 
 #run: make docker-network 		docker-network
 docker-network:
