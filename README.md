@@ -87,13 +87,11 @@ ___
 
     `terraform destroy`
 
-4. Update variable in make file
+4. Update variables in make file
 
-update kaggle api credentials dir `KAGGLE_CREDENTIAL_DIR`
-and gcs credentials json file path `GCS_CREDENTIAL_JSON`
-add dockerhub base name for 
-    `PREFECT_CONTAINER_NAME`
-    `DBT_CONTAINER_NAME`
+- update kaggle api credentials dir  `KAGGLE_CREDENTIAL_DIR`
+- and gcs credentials json file path `GCS_CREDENTIAL_JSON`
+- add dockerhub base name for `PREFECT_CONTAINER_NAME` and    `DBT_CONTAINER_NAME`
 
 5. Build the dockers
     ```
@@ -111,7 +109,7 @@ add dockerhub base name for
     GCP Credentials (gcp-cred)
     GCS Bucket (prefect-dtc-de-bucket)
 
-8. Run the pipeline
+8. Run the pipeline manually
 
     ```
     make run-kaggle-download-step
@@ -128,7 +126,7 @@ add dockerhub base name for
     Virtual Machine
 
     ```
-    pip install -r requirements.txt
+    pip install -r prefect/requirements.txt
     prefect cloud login
     prefect agent start --pool default-agent-pool
     ```
