@@ -9,8 +9,12 @@
 
 {{ config(materialized='view') }}
 
+-- partitioning over order_id, product_id and event as these combo defines unique entry
 with sales_data as (
-    select * from {{ source('staging', 'sales') }}    
+    select *,
+        row_number() over(partition by order_id, product_id, event_time) as rn
+    from {{ source('staging', 'sales') }}
+    where price is not null
 )
 
 select
@@ -23,7 +27,7 @@ select
     price,    
     cast(user_id as integer) as user_id
 from sales_data
-where price is not null
+where rn =1
 
 /*
     Uncomment the line below to remove records with null `id` values
