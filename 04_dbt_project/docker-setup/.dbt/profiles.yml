@@ -1,0 +1,38 @@
+bussiness_dashboard:
+  outputs:
+
+    dev:
+      type: postgres
+      threads: [1 or more]
+      host: [host]
+      port: [port]
+      user: [dev_username]
+      pass: [dev_password]
+      dbname: [dbname]
+      schema: [dev_schema]
+
+    prod:
+      type: postgres
+      threads: [1 or more]
+      host: [host]
+      port: [port]
+      user: [prod_username]
+      pass: [prod_password]
+      dbname: [dbname]
+      schema: [prod_schema]
+  target: dev
+
+bq-dbt-workshop:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      dataset: bd
+      location: US
+      keyfile: /.google/credentials/google_credentials.json
+      method: service-account
+      priority: interactive
+      project: [gcp-project-id]
+      threads: 4
+      timeout_seconds: 300
+      fixed_retries: 1
