@@ -27,6 +27,9 @@ Data source contains single csv file of purchase history.
 Frequency of data download:
     since this is an static data from kaggle it can be imported only once. But in real usecase new data would be downloaded daily.
 
+Extract step code is in [01_kaggle_dataset](./01_kaggle_dataset/)
+And code for importing data into bigquery is in [02_gcp](./02_gcp/) 
+
 ## 2. Data warehouse
 We are using BiqQuery as a Data Warehouse and it is used as data source in looker (Dashboard).
 
