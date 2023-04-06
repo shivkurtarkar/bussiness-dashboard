@@ -87,11 +87,13 @@ ___
 
     `terraform destroy`
 
-4. Update variables in make file
+4. Update variables in [make file](./Makefile)
 
 - update kaggle api credentials dir  `KAGGLE_CREDENTIAL_DIR`
 - and gcs credentials json file path `GCS_CREDENTIAL_JSON`
 - add dockerhub base name for `PREFECT_CONTAINER_NAME` and    `DBT_CONTAINER_NAME`
+
+- update gcp project id in [./04_dbt_project/docker-setup/.dbt/profiles.yml](./04_dbt_project/docker-setup/.dbt/profiles.yml)
 
 5. Build the dockers
     ```
