@@ -32,7 +32,7 @@ bq-dbt-workshop:
       keyfile: /.google/credentials/google_credentials.json
       method: service-account
       priority: interactive
-      project: [gcp-project-id]
+      project: "{{ env_var('GCP_PROJECT_ID') }}"
       threads: 4
       timeout_seconds: 300
       fixed_retries: 1
