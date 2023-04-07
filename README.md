@@ -58,6 +58,7 @@ ___
 ### Prerequisites
 - docker
 - make
+- python
 
 1. Clone the repository
 2. Create .env file using
