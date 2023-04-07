@@ -98,6 +98,7 @@ ___
     `gcloud auth application-defualt login`
 
 5. Initialize infrastructure using terraform
+
     to check what will be deployed run 
 
     `make terraform_deploy_dry`
