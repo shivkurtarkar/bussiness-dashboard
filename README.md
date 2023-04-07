@@ -58,58 +58,71 @@ ___
 ### Prerequisites
 - docker
 - make
+- python
 
 1. Clone the repository
-2. Refres service-accounts auth token for this session
+2. Create .env file using
+
+    `make create_dot_env`
+    
+    Now update variables in [.env](./.env)
+
+    `REPOSITORY_NAME` : docker repository name
+
+    `KAGGLE_CREDENTIAL_DIR`: .kaggle keys directory eg: /home/.kaggle
+
+    `GCP_PROJECT_ID`: gcp project id
+
+    `GCP_CREDENTIAL_JSON`: path to gcs json file in the system
+    
+    If you want to override defaults
+
+    `DBT_PROFILE_DIR`: path to .dbt profiles dir eg. /path/to/project/04_dbt_project/docker-setup/.dbt
+
+    `PREFECT_API_URL`: prefect api url
+
+
+3. Build the dockers
+
+    `make docker-build-all`
+
+    if running in cloud you might need to update docker repository name and run
+
+    `make docker-push-all`
+
+
+4. Refresh service-accounts auth token for this session
 
     `gcloud auth application-defualt login`
-    
 
-3. Initialize infrastructure using terraform
-    change directory
+5. Initialize infrastructure using terraform
+    to check what will be deployed run 
 
-    `cd terraform`
+    `make terraform_deploy_dry`
 
-    initialize terraform
+    to actually deploy run
+    `make terraform_deploy`
 
-    `terraform init`
+    to destroy infra
 
-    Preview the changes to be applied
-
-    `terraform plan -var="project=<gcp-project-id>"`
-
-    Create new infra
-
-    `terraform apply -var="project=<gcp-project-id>"`
+    `make terraform_destroy`
 
 
-    Delete infra after your work, to avoid cost on any running
-
-    `terraform destroy`
-
-4. Update variables in make file
-
-- update kaggle api credentials dir  `KAGGLE_CREDENTIAL_DIR`
-- and gcs credentials json file path `GCS_CREDENTIAL_JSON`
-- add dockerhub base name for `PREFECT_CONTAINER_NAME` and    `DBT_CONTAINER_NAME`
-
-5. Build the dockers
-    ```
-    make prefect-docker-build
-    make build-kaggle-download-step
-    make build-bq-import-step
-    make dbt-docker-build
-    ```
-
-6. Run prefect
+6. If you want to deploy local prefect run
 
     `make prefect-docker-compose-run`
 
-7. Prefect GCS Block Setup
-    GCP Credentials (gcp-cred)
-    GCS Bucket (prefect-dtc-de-bucket)
+    or if you want to use prefect cloud 
+    update `PREFECT_API_URL` in [.env](./.env)
 
-8. Run the pipeline manually
+
+7. run following command to create prefect Blocks
+
+    `make prefect-create-blocks`
+
+8. Deployment
+
+    a. To run the pipeline manually
 
     ```
     make run-kaggle-download-step
@@ -117,22 +130,21 @@ ___
     make dbt-docker-run
     ```
 
-9. Setup Agent (local or VM)
+    b. To use orchestrate pipelines using prefect 
+
+    Setup prefect Agent (local or VM)
     
-    Local
+    `make init_setup` 
 
-    `prefect agent start --pool default-agent-pool`
-    
-    Virtual Machine
+    if you are using prefect cloud run
 
-    ```
-    pip install -r prefect/requirements.txt
-    prefect cloud login
-    prefect agent start --pool default-agent-pool
-    ```
-10. Deploy the prefect pipelines
+    `prefect cloud login`
 
-    ```
-    prefect deployment ...
-    ```
+    run following command to start the queue
 
+    `make prefect-run-agent`
+
+
+    Deploy the prefect pipelines
+
+    `make prefect-deploy-all`
