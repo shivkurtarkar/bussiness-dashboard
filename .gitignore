@@ -166,5 +166,3 @@ data
 data2
 
 *.log
-.dbt
-04_dbt_project/docker-setup/.dbt/profiles.yml
