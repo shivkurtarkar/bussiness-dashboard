@@ -1,0 +1,22 @@
+# **********************************************
+# * Please make sure there are no spaces
+# * in values especialy at the end
+# **********************************************
+
+
+# Docker hub repository name
+REPOSITORY_NAME=<repository_name>
+
+# .kaggle api key directory
+KAGGLE_CREDENTIAL_DIR=/home/<user>/.kaggle
+
+# GCP credentials
+GCP_PROJECT_ID=<gcp-project-id>
+GCP_CREDENTIAL_JSON=<path/to/google/gcp-project-id-cred.json
+
+
+# if you want to override default value ofPREFECT_API_URL
+# PREFECT_API_URL=http://prefect:4200/api
+
+# if you want to override default .dbt dir path
+# DBT_PROFILE_DIR=
