@@ -206,22 +206,22 @@ export_env:
 #run: make terraform_init
 terraform_init:
 	@cd terraform && \
-	echo "terraform init"
+	terraform init
 
 #run: make terraform_plan
 terraform_plan:
 	@cd terraform && \
-	echo 'terraform plan -var="project=${GCP_PROJECT_ID}"'
+	terraform plan -var="project=${GCP_PROJECT_ID}"
 
 #run: make terraform_apply
 terraform_apply:
 	@cd terraform && \
-	echo 'terraform apply -var="project=${GCP_PROJECT_ID}"'
+	terraform apply -var="project=${GCP_PROJECT_ID}"
 
 #run: make terraform_destroy
 terraform_destroy:
 	@cd terraform && \
-	echo "terraform destroy"
+	terraform destroy
 
 #run: make terraform_deploy_dry
 terraform_deploy_dry: export_env terraform_init terraform_plan
