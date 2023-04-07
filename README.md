@@ -41,7 +41,7 @@ The core model sales_changes computes sales for diffrent time windows.
 
 
 ## 4. Dashboard 
-[Dashboard](./images/dashboard.png)
+![Dashboard](./images/dashboard.png)
 
 Pdf of the dashboard can be found [here](./05_dashboard/DE_Sales_Report.pdf)
 And here is access to dashboard [here](https://lookerstudio.google.com/s/nZ_rDTE-aZg)
